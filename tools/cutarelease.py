@@ -111,7 +111,7 @@ def cutarelease(project_name, version_files, dry_run=False):
             "Are you sure you want cut a %s release?\n"
             "This will involved commits and a push." % version,
             default="no")
-        print "* * *"
+        print("* * *")
         if answer != "yes":
             log.info("user abort")
             return
@@ -135,7 +135,7 @@ def cutarelease(project_name, version_files, dry_run=False):
             "The changelog '%s' top section doesn't have the expected\n"
             "'%s' marker. Has this been released already?"
             % (changes_path, nyr), default="yes")
-        print "* * *"
+        print("* * *")
         if answer != "no":
             log.info("abort")
             return
@@ -165,7 +165,7 @@ def cutarelease(project_name, version_files, dry_run=False):
     # Optionally release.
     if exists("package.json"):
         answer = query_yes_no("\n* * *\nPublish to npm?", default="yes")
-        print "* * *"
+        print("* * *")
         if answer == "yes":
             if dry_run:
                 log.info("skipping npm publish (dry-run)")
@@ -173,7 +173,7 @@ def cutarelease(project_name, version_files, dry_run=False):
                 run('npm publish')
     elif exists("setup.py"):
         answer = query_yes_no("\n* * *\nPublish to pypi?", default="yes")
-        print "* * *"
+        print("* * *")
         if answer == "yes":
             if dry_run:
                 log.info("skipping pypi publish (dry-run)")
@@ -336,7 +336,7 @@ def _parse_version_file(version_file):
         elif content.startswith("#!"):
             shebang = content.splitlines(False)[0]
             shebang_bits = re.split(r'[/ \t]', shebang)
-            for name, typ in {"python": "python", "node": "javascript"}.items():
+            for name, typ in list({"python": "python", "node": "javascript"}.items()):
                 if name in shebang_bits:
                     version_file_type = typ
                     break
@@ -481,10 +481,10 @@ def query_yes_no(question, default="yes"):
 
     while 1:
         sys.stdout.write(question + prompt)
-        choice = raw_input().lower()
+        choice = input().lower()
         if default is not None and choice == '':
             return default
-        elif choice in valid.keys():
+        elif choice in list(valid.keys()):
             return valid[choice]
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' "\

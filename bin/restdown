@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """restdown -- Pretty REST API docs authored in Markdown
@@ -30,9 +30,9 @@ import logging
 import json
 import copy
 import optparse
-from StringIO import StringIO
+from io import StringIO
 import csv
-from urllib import quote_plus as urlquote
+from urllib.parse import quote_plus as urlquote
 
 _saved_path = sys.path[:]
 sys.path.insert(0, join(dirname(dirname(abspath(realpath(__file__)))), "externals", "lib")) # dev layout
@@ -58,7 +58,7 @@ markdown_opts = {
 }
 
 
-class RestdownError(StandardError):
+class RestdownError(Exception):
     pass
 
 
@@ -228,7 +228,7 @@ def restdown_path(path, brand_dir=None, copy_brand_media_to=None, defines=None):
             f = StringIO(metadata[key])
             reader = csv.reader(f)
             try:
-                row = [cell.strip() for cell in reader.next()]
+                row = [cell.strip() for cell in next(reader)]
             except StopIteration:
                 row = []
             metadata[key] = row
@@ -346,14 +346,14 @@ h1,h2,h3,h4,h5,h6 {
     toc_html_marker = "%(toc_html)s"
     if toc_html_marker not in header_in and toc_html_marker not in footer_in:
         bits.append
-        bits.append(u"""
+        bits.append("""
     <div id="sidebar">
 %(toc_html)s
     </div>
 """ % metadata)
     bits.append('    <div id="content">\n')
     bits.append(html)
-    bits.append(u"\n    </div>\n")
+    bits.append("\n    </div>\n")
     bits.append(footer)
 
     endpoints = []
@@ -368,7 +368,7 @@ h1,h2,h3,h4,h5,h6 {
 
     if "version" in metadata:
         data["version"] = metadata["version"]
-    return u''.join(bits), data
+    return ''.join(bits), data
 
 
 
@@ -440,9 +440,9 @@ class _NoReflowFormatter(optparse.IndentedHelpFormatter):
 # Passes Python2.7's test suite and incorporates all the latest updates.
 
 try:
-    from thread import get_ident as _get_ident
+    from threading import get_ident as _get_ident
 except ImportError:
-    from dummy_thread import get_ident as _get_ident
+    from dummy_threading import get_ident as _get_ident
 
 try:
     from _abcoll import KeysView, ValuesView, ItemsView

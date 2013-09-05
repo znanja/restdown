@@ -34,7 +34,7 @@ td_regex = re.compile(r"""<td>([^<]*?)</td>""")
 
 
 def htmltables2wikitables(path):
-    print "# htmltables2wikitables %s" % path
+    print("# htmltables2wikitables %s" % path)
     
     f = codecs.open(path, 'r', 'utf-8')
     before = f.read()
@@ -44,28 +44,28 @@ def htmltables2wikitables(path):
     after = []
     for table in table_regex.finditer(before):
         if VERBOSE:
-            print "--"
+            print("--")
         rows = []
         for tr in tr_regex.finditer(table.group(0)):
             row = []
             for td in td_regex.finditer(tr.group(1)):
                 # Normalize whitespace to a single line.
-                cell = re.sub(r'\s*\n\s*', u' ', td.group(1)).strip()
+                cell = re.sub(r'\s*\n\s*', ' ', td.group(1)).strip()
                 row.append(cell)
-            rows.append(u"|| %s ||" % u" || ".join(row))
+            rows.append("|| %s ||" % " || ".join(row))
             if VERBOSE:
-                print rows[-1]
+                print(rows[-1])
         start, end = table.span()
         after.append(before[idx:start])
-        after.append(u'\n'.join(rows))
+        after.append('\n'.join(rows))
         idx = end
     after.append(before[idx:])
-    after = u''.join(after)
+    after = ''.join(after)
     
     if after == before:
-        print "# '%s' not changed." % path
+        print("# '%s' not changed." % path)
     else:
-        print "# '%s' updated." % path
+        print("# '%s' updated." % path)
         f = codecs.open(path, 'w', 'utf-8')
         f.write(after)
         f.close()
@@ -78,7 +78,7 @@ def htmltables2wikitables(path):
 if __name__ == '__main__':
     for path in sys.argv[1:]:
         if path in ("-h", "--help"):
-            print __doc__
+            print(__doc__)
             break
         htmltables2wikitables(path)
 
